@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HRV Altitude — V1</title>
+
+<style>
+:root {
+  --ink: #151515;
+  --muted: #6e6a62;
+  --line: #1b1b1b;
+  --card: rgba(255,255,255,0.58);
+  --border: rgba(20,20,20,0.18);
+  --paper: #f4f1ea;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 38%),
+    linear-gradient(135deg, #f7f3eb, #e8e1d6);
+  color: var(--ink);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.app {
+  width: min(100%, 430px);
+  min-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+h1 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.status-pill {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 11px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.36);
+  white-space: nowrap;
+}
+
+.state-card {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 20px;
+  background: var(--card);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(40,30,20,0.12);
+}
+
+.state-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.state-label {
+  margin: 0;
+  font-size: 42px;
+  line-height: 0.88;
+  letter-spacing: -0.08em;
+  font-weight: 800;
+}
+
+.state-meta {
+  text-align: right;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.state-meta strong {
+  color: var(--ink);
+  font-size: 18px;
+}
+
+.chart-wrap {
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.06)),
+    repeating-linear-gradient(0deg, transparent 0, transparent 22px, rgba(0,0,0,0.018) 23px);
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.zone {
+  fill: transparent;
+  stroke: rgba(20,20,20,0.11);
+}
+
+.zone-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  fill: rgba(20,20,20,0.48);
+  font-weight: 700;
+}
+
+.threshold {
+  stroke: rgba(20,20,20,0.16);
+  stroke-dasharray: 5 7;
+}
+
+.trace-shadow {
+  fill: none;
+  stroke: rgba(20,20,20,0.11);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trace {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 3.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.marker-ring {
+  fill: rgba(244,241,234,0.94);
+  stroke: var(--line);
+  stroke-width: 2.5;
+}
+
+.marker-core { fill: var(--line); }
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.metric {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 13px;
+  background: rgba(255,255,255,0.32);
+}
+
+.metric span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  font-size: 22px;
+  letter-spacing: -0.05em;
+}
+
+.control-card {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 14px;
+  background: rgba(255,255,255,0.32);
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+input, select {
+  min-height: 44px;
+  border-radius: 15px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.45);
+  padding: 0 13px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.note {
+  margin: 0;
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.controls.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+button {
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #171717;
+  color: #f5f1e8;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+button.secondary {
+  background: rgba(255,255,255,0.34);
+  color: var(--ink);
+}
+
+button:disabled {
+  opacity: 0.45;
+}
+
+@media (max-height: 760px) {
+  .state-card { padding: 16px; }
+  .state-label { font-size: 36px; }
+  .chart-wrap svg { max-height: 390px; }
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+
+<header class="topbar">
+  <div>
+    <p class="eyebrow">HRV Altitude</p>
+    <h1>Nervous<br />System State</h1>
+  </div>
+  <div class="status-pill" id="modeLabel">Ready</div>
+</header>
+
+<section class="state-card">
+  <div class="state-header">
+    <div>
+      <p class="eyebrow">Current State</p>
+      <p class="state-label" id="stateLabel">Adaptive</p>
+    </div>
+
+    <div class="state-meta">
+      RMSSD<br />
+      <strong id="rmssdLabel">-- ms</strong>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <svg viewBox="0 0 390 500">
+      <rect x="0" y="0" width="390" height="125" class="zone" />
+      <rect x="0" y="125" width="390" height="125" class="zone" />
+      <rect x="0" y="250" width="390" height="125" class="zone" />
+      <rect x="0" y="375" width="390" height="125" class="zone" />
+
+      <line x1="0" y1="125" x2="390" y2="125" class="threshold" />
+      <line x1="0" y1="250" x2="390" y2="250" class="threshold" />
+      <line x1="0" y1="375" x2="390" y2="375" class="threshold" />
+
+      <text x="22" y="38" class="zone-label">Restored</text>
+      <text x="22" y="163" class="zone-label">Adaptive</text>
+      <text x="22" y="288" class="zone-label">Loaded</text>
+      <text x="22" y="413" class="zone-label">Strained</text>
+
+      <path id="traceShadow" class="trace-shadow" d="" />
+      <path id="tracePath" class="trace" d="" />
+
+      <circle id="markerRing" cx="22" cy="250" r="13" class="marker-ring" />
+      <circle id="markerCore" cx="22" cy="250" r="4.5" class="marker-core" />
+    </svg>
+  </div>
+</section>
+
+<section class="metric-grid">
+  <div class="metric">
+    <span>Heart Rate</span>
+    <strong id="hrLabel">--</strong>
+  </div>
+  <div class="metric">
+    <span>Baseline</span>
+    <strong id="baselineLabel">52</strong>
+  </div>
+  <div class="metric">
+    <span>Delta</span>
+    <strong id="deltaLabel">--</strong>
+  </div>
+</section>
+
+<section class="control-card">
+  <div class="control-row">
+    <label>
+      Baseline RMSSD
+      <input id="baselineInput" type="number" value="52" min="10" max="200" />
+    </label>
+
+    <label>
+      Simulation
+      <select id="simMode">
+        <option value="balanced">Balanced</option>
+        <option value="recovered">Recovered</option>
+        <option value="stressed">Stressed</option>
+        <option value="drift">Recovery Drift</option>
+      </select>
+    </label>
+  </div>
+</section>
+
+<p class="note" id="note">
+  Connect a Polar strap or run simulation mode. Higher altitude means RMSSD is above your baseline.
+</p>
+
+<div class="controls">
+  <button id="connectBtn">Connect Polar</button>
+  <button class="secondary" id="simulateBtn">Start Sim</button>
+</div>
+
+<div class="controls three">
+  <button class="secondary" id="saveBaselineBtn">Save Base</button>
+  <button class="secondary" id="resetBtn">Reset</button>
+  <button class="secondary" id="disconnectBtn">Disconnect</button>
+</div>
+
+</main>
+
+<script>
+const CONFIG = {
+  chartWidth: 390,
+  maxPoints: 36,
+  defaultBaseline: 52,
+  rmssdWindowBeats: 36,
+  renderEveryBeats: 2,
+  storageKey: "hrvAltitudeBaseline",
+  states: {
+    restored: { label: "Restored", minDelta: 10 },
+    adaptive: { label: "Adaptive", minDelta: -10 },
+    loaded: { label: "Loaded", minDelta: -25 },
+    strained: { label: "Strained", minDelta: -Infinity }
+  }
+};
+
+const els = {
+  modeLabel: document.getElementById("modeLabel"),
+  stateLabel: document.getElementById("stateLabel"),
+  rmssdLabel: document.getElementById("rmssdLabel"),
+  hrLabel: document.getElementById("hrLabel"),
+  baselineLabel: document.getElementById("baselineLabel"),
+  deltaLabel: document.getElementById("deltaLabel"),
+  baselineInput: document.getElementById("baselineInput"),
+  simMode: document.getElementById("simMode"),
+  tracePath: document.getElementById("tracePath"),
+  traceShadow: document.getElementById("traceShadow"),
+  markerRing: document.getElementById("markerRing"),
+  markerCore: document.getElementById("markerCore"),
+  connectBtn: document.getElementById("connectBtn"),
+  simulateBtn: document.getElementById("simulateBtn"),
+  resetBtn: document.getElementById("resetBtn"),
+  saveBaselineBtn: document.getElementById("saveBaselineBtn"),
+  disconnectBtn: document.getElementById("disconnectBtn"),
+  note: document.getElementById("note")
+};
+
+const appState = {
+  rrIntervals: [],
+  points: [],
+  heartRate: null,
+  baseline: CONFIG.defaultBaseline,
+  rmssd: null,
+  delta: null,
+  state: "adaptive",
+  beatCount: 0,
+  device: null,
+  server: null,
+  hrCharacteristic: null,
+  simulation: {
+    active: false,
+    timer: null,
+    tick: 0
+  }
+};
+
+function loadSavedBaseline() {
+  const saved = Number(localStorage.getItem(CONFIG.storageKey));
+
+  if (Number.isFinite(saved) && saved > 0) {
+    appState.baseline = saved;
+    els.baselineInput.value = saved;
+  }
+}
+
+function saveBaseline() {
+  const baseline = Number(els.baselineInput.value);
+
+  if (!Number.isFinite(baseline) || baseline <= 0) {
+    els.note.textContent = "Enter a valid baseline before saving.";
+    return;
+  }
+
+  localStorage.setItem(CONFIG.storageKey, String(baseline));
+  appState.baseline = baseline;
+  els.note.textContent = `Baseline saved: ${Math.round(baseline)} ms.`;
+  render();
+}
+
+function calculateRMSSD(rrIntervals) {
+  if (rrIntervals.length < 3) return null;
+
+  let sum = 0;
+
+  for (let i = 1; i < rrIntervals.length; i++) {
+    const diff = rrIntervals[i] - rrIntervals[i - 1];
+    sum += diff * diff;
+  }
+
+  return Math.sqrt(sum / (rrIntervals.length - 1));
+}
+
+function estimateHeartRate(rrIntervals) {
+  if (!rrIntervals.length) return null;
+
+  const recent = rrIntervals.slice(-5);
+  const avgRR = recent.reduce((sum, rr) => sum + rr, 0) / recent.length;
+
+  return Math.round(60000 / avgRR);
+}
+
+function getStateFromDelta(delta) {
+  if (delta >= CONFIG.states.restored.minDelta) return "restored";
+  if (delta >= CONFIG.states.adaptive.minDelta) return "adaptive";
+  if (delta >= CONFIG.states.loaded.minDelta) return "loaded";
+  return "strained";
+}
+
+function getYFromDelta(delta) {
+  const clamped = Math.max(-40, Math.min(20, delta));
+  const t = (20 - clamped) / 60;
+  return 55 + t * 390;
+}
+
+function addRRInterval(rr) {
+  if (!Number.isFinite(rr)) return;
+  if (rr < 300 || rr > 2000) return;
+
+  appState.rrIntervals.push(rr);
+  appState.beatCount++;
+
+  if (appState.rrIntervals.length > 120) {
+    appState.rrIntervals.shift();
+  }
+
+  updateEngine();
+}
+
+function updateEngine() {
+  appState.baseline = Number(els.baselineInput.value) || CONFIG.defaultBaseline;
+
+  const windowedRR = appState.rrIntervals.slice(-CONFIG.rmssdWindowBeats);
+
+  appState.rmssd = calculateRMSSD(windowedRR);
+
+  if (!appState.heartRate) {
+    appState.heartRate = estimateHeartRate(appState.rrIntervals);
+  }
+
+  if (appState.rmssd !== null && appState.baseline > 0) {
+    appState.delta = ((appState.rmssd - appState.baseline) / appState.baseline) * 100;
+    appState.state = getStateFromDelta(appState.delta);
+
+    if (appState.beatCount % CONFIG.renderEveryBeats === 0) {
+      appState.points.push(getYFromDelta(appState.delta));
+
+      if (appState.points.length > CONFIG.maxPoints) {
+        appState.points.shift();
+      }
+    }
+  }
+
+  render();
+}
+
+function makePath(points) {
+  if (!points.length) return "";
+
+  const coords = points.map((y, index) => ({
+    x: 22 + index * ((CONFIG.chartWidth - 44) / Math.max(CONFIG.maxPoints - 1, 1)),
+    y
+  }));
+
+  let d = `M ${coords[0].x} ${coords[0].y}`;
+
+  for (let i = 1; i < coords.length; i++) {
+    const prev = coords[i - 1];
+    const curr = coords[i];
+    const midX = (prev.x + curr.x) / 2;
+    d += ` C ${midX} ${prev.y}, ${midX} ${curr.y}, ${curr.x} ${curr.y}`;
+  }
+
+  return d;
+}
+
+function render() {
+  const stateConfig = CONFIG.states[appState.state];
+
+  els.stateLabel.textContent = stateConfig.label;
+
+  els.rmssdLabel.textContent =
+    appState.rmssd === null ? "-- ms" : `${Math.round(appState.rmssd)} ms`;
+
+  els.hrLabel.textContent = appState.heartRate ?? "--";
+  els.baselineLabel.textContent = Math.round(appState.baseline);
+
+  els.deltaLabel.textContent =
+    appState.delta === null
+      ? "--"
+      : `${appState.delta > 0 ? "+" : ""}${Math.round(appState.delta)}%`;
+
+  const path = makePath(appState.points);
+  els.tracePath.setAttribute("d", path);
+  els.traceShadow.setAttribute("d", path);
+
+  if (appState.points.length) {
+    const lastY = appState.points[appState.points.length - 1];
+    const lastX =
+      22 +
+      (appState.points.length - 1) *
+      ((CONFIG.chartWidth - 44) / Math.max(CONFIG.maxPoints - 1, 1));
+
+    els.markerRing.setAttribute("cx", lastX);
+    els.markerRing.setAttribute("cy", lastY);
+    els.markerCore.setAttribute("cx", lastX);
+    els.markerCore.setAttribute("cy", lastY);
+  }
+}
+
+function parseHeartRateMeasurement(value) {
+  const flags = value.getUint8(0);
+  const isHeartRate16Bit = flags & 0x01;
+  const hasEnergyExpended = flags & 0x08;
+  const hasRRIntervals = flags & 0x10;
+
+  let index = 1;
+
+  const heartRate = isHeartRate16Bit
+    ? value.getUint16(index, true)
+    : value.getUint8(index);
+
+  index += isHeartRate16Bit ? 2 : 1;
+
+  if (hasEnergyExpended) index += 2;
+
+  const rrIntervals = [];
+
+  if (hasRRIntervals) {
+    while (index + 1 < value.byteLength) {
+      const rawRR = value.getUint16(index, true);
+      rrIntervals.push((rawRR / 1024) * 1000);
+      index += 2;
+    }
+  }
+
+  return { heartRate, rrIntervals };
+}
+
+function handleHeartRateNotification(event) {
+  const parsed = parseHeartRateMeasurement(event.target.value);
+
+  if (parsed.heartRate) {
+    appState.heartRate = parsed.heartRate;
+  }
+
+  if (parsed.rrIntervals.length) {
+    parsed.rrIntervals.forEach(addRRInterval);
+    els.modeLabel.textContent = "Polar Live";
+    els.note.textContent = `Live Polar data. Last packet: ${parsed.rrIntervals.length} RR interval(s).`;
+  } else {
+    render();
+    els.note.textContent = "Heart rate received. Waiting for RR intervals.";
+  }
+}
+
+function handleDisconnect() {
+  appState.device = null;
+  appState.server = null;
+  appState.hrCharacteristic = null;
+
+  els.modeLabel.textContent = "Disconnected";
+  els.connectBtn.textContent = "Connect Polar";
+  els.note.textContent = "Polar disconnected.";
+}
+
+async function connectPolar() {
+  stopSimulation();
+
+  if (!navigator.bluetooth) {
+    els.modeLabel.textContent = "No Bluetooth";
+    els.note.textContent = "Web Bluetooth unavailable. Use Chrome/Edge on desktop or Android. iPhone browser support is likely the blocker.";
+    return;
+  }
+
+  try {
+    els.modeLabel.textContent = "Searching";
+    els.note.textContent = "Choose your Polar strap from the Bluetooth picker.";
+
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ services: ["heart_rate"] }],
+      optionalServices: ["heart_rate"]
+    });
+
+    appState.device = device;
+    device.addEventListener("gattserverdisconnected", handleDisconnect);
+
+    els.modeLabel.textContent = "Connecting";
+
+    const server = await device.gatt.connect();
+    appState.server = server;
+
+    const service = await server.getPrimaryService("heart_rate");
+    const characteristic = await service.getCharacteristic("heart_rate_measurement");
+
+    appState.hrCharacteristic = characteristic;
+
+    characteristic.addEventListener("characteristicvaluechanged", handleHeartRateNotification);
+
+    await characteristic.startNotifications();
+
+    els.modeLabel.textContent = "Polar Live";
+    els.connectBtn.textContent = "Connected";
+    els.note.textContent = "Connected. Waiting for heart rate and RR intervals.";
+
+  } catch (error) {
+    els.modeLabel.textContent = "Connect Failed";
+    els.connectBtn.textContent = "Connect Polar";
+    els.note.textContent = error.message || "Could not connect to Polar device.";
+  }
+}
+
+async function disconnectPolar() {
+  stopSimulation();
+
+  try {
+    if (appState.hrCharacteristic) {
+      await appState.hrCharacteristic.stopNotifications();
+      appState.hrCharacteristic.removeEventListener("characteristicvaluechanged", handleHeartRateNotification);
+    }
+
+    if (appState.device?.gatt?.connected) {
+      appState.device.gatt.disconnect();
+    }
+
+    handleDisconnect();
+
+  } catch (error) {
+    els.note.textContent = "Disconnect attempted, but the device may already be disconnected.";
+    handleDisconnect();
+  }
+}
+
+function randomBetween(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function generateSimulatedRR() {
+  const mode = els.simMode.value;
+  const t = appState.simulation.tick;
+  const breathWave = Math.sin(t / 3.2);
+  const slowWave = Math.sin(t / 18);
+
+  let baseRR = 960;
+  let variability = 42;
+  let noise = 12;
+
+  if (mode === "recovered") {
+    baseRR = 1030;
+    variability = 68;
+    noise = 16;
+  }
+
+  if (mode === "stressed") {
+    baseRR = 760;
+    variability = 13;
+    noise = 7;
+  }
+
+  if (mode === "drift") {
+    const drift = Math.min(t / 180, 1);
+    baseRR = 790 + drift * 210;
+    variability = 16 + drift * 55;
+    noise = 8 + drift * 8;
+  }
+
+  appState.simulation.tick++;
+
+  return Math.round(
+    baseRR +
+    breathWave * variability +
+    slowWave * variability * 0.22 +
+    randomBetween(-noise, noise)
+  );
+}
+
+function startSimulation() {
+  if (appState.simulation.active) return;
+
+  appState.simulation.active = true;
+  els.simulateBtn.textContent = "Stop Sim";
+  els.modeLabel.textContent = "Simulating";
+  els.note.textContent = "Simulation running.";
+
+  appState.simulation.timer = setInterval(() => {
+    appState.heartRate = null;
+    addRRInterval(generateSimulatedRR());
+  }, 850);
+}
+
+function stopSimulation() {
+  appState.simulation.active = false;
+  els.simulateBtn.textContent = "Start Sim";
+
+  if (appState.simulation.timer) {
+    clearInterval(appState.simulation.timer);
+    appState.simulation.timer = null;
+  }
+}
+
+function toggleSimulation() {
+  appState.simulation.active ? stopSimulation() : startSimulation();
+}
+
+function resetData() {
+  stopSimulation();
+
+  appState.rrIntervals = [];
+  appState.points = [];
+  appState.heartRate = null;
+  appState.rmssd = null;
+  appState.delta = null;
+  appState.state = "adaptive";
+  appState.beatCount = 0;
+  appState.simulation.tick = 0;
+
+  els.modeLabel.textContent = "Ready";
+  els.note.textContent = "Reset complete. Connect Polar or start simulation.";
+
+  render();
+}
+
+els.connectBtn.addEventListener("click", connectPolar);
+els.simulateBtn.addEventListener("click", toggleSimulation);
+els.resetBtn.addEventListener("click", resetData);
+els.disconnectBtn.addEventListener("click", disconnectPolar);
+els.saveBaselineBtn.addEventListener("click", saveBaseline);
+els.baselineInput.addEventListener("input", updateEngine);
+
+loadSavedBaseline();
+render();
+</script>
+</body>
+</html>
