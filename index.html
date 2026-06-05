@@ -3,275 +3,277 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>HRV Altitude — V1</title>
+<title>HRV Altitude — Pass 7</title>
 
 <style>
 :root {
-  --ink: #151515;
-  --muted: #6e6a62;
-  --line: #1b1b1b;
-  --card: rgba(255,255,255,0.58);
-  --border: rgba(20,20,20,0.18);
-  --paper: #f4f1ea;
+  --ink:#151515;
+  --muted:#6e6a62;
+  --line:#151515;
+  --card:rgba(255,255,255,.58);
+  --border:rgba(20,20,20,.18);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing:border-box; }
 
-html, body {
-  margin: 0;
-  min-height: 100%;
+html,body {
+  margin:0;
+  min-height:100%;
   background:
-    radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 38%),
-    linear-gradient(135deg, #f7f3eb, #e8e1d6);
-  color: var(--ink);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    radial-gradient(circle at top left,rgba(255,255,255,.82),transparent 38%),
+    linear-gradient(135deg,#f7f3eb,#e8e1d6);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 body {
-  display: grid;
-  place-items: center;
-  padding: 16px;
+  display:grid;
+  place-items:center;
+  padding:16px;
 }
 
 .app {
-  width: min(100%, 430px);
-  min-height: 94vh;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  width:min(100%,430px);
+  min-height:94vh;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
 
 .topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
 }
 
 .eyebrow {
-  margin: 0 0 4px;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
+  margin:0 0 4px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
 }
 
 h1 {
-  margin: 0;
-  font-size: 26px;
-  line-height: 0.95;
-  letter-spacing: -0.06em;
+  margin:0;
+  font-size:26px;
+  line-height:.95;
+  letter-spacing:-.06em;
 }
 
 .status-pill {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 8px 11px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(255,255,255,0.36);
-  white-space: nowrap;
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:8px 11px;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:rgba(255,255,255,.36);
+  white-space:nowrap;
 }
 
 .state-card {
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 20px;
-  background: var(--card);
-  backdrop-filter: blur(18px);
-  box-shadow: 0 24px 80px rgba(40,30,20,0.12);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:20px;
+  background:var(--card);
+  backdrop-filter:blur(18px);
+  box-shadow:0 24px 80px rgba(40,30,20,.12);
 }
 
 .state-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 16px;
-  margin-bottom: 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:16px;
+  margin-bottom:14px;
 }
 
 .state-label {
-  margin: 0;
-  font-size: 42px;
-  line-height: 0.88;
-  letter-spacing: -0.08em;
-  font-weight: 800;
+  margin:0;
+  font-size:42px;
+  line-height:.88;
+  letter-spacing:-.08em;
+  font-weight:800;
 }
 
 .state-meta {
-  text-align: right;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.35;
+  text-align:right;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
 }
 
 .state-meta strong {
-  color: var(--ink);
-  font-size: 18px;
+  color:var(--ink);
+  font-size:18px;
 }
 
 .chart-wrap {
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid var(--border);
+  overflow:hidden;
+  border-radius:22px;
+  border:1px solid var(--border);
   background:
-    linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.06)),
-    repeating-linear-gradient(0deg, transparent 0, transparent 22px, rgba(0,0,0,0.018) 23px);
+    linear-gradient(to bottom,rgba(255,255,255,.3),rgba(255,255,255,.06)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 22px,rgba(0,0,0,.018) 23px);
 }
 
 svg {
-  display: block;
-  width: 100%;
-  height: auto;
+  display:block;
+  width:100%;
+  height:auto;
 }
 
 .zone {
-  fill: transparent;
-  stroke: rgba(20,20,20,0.11);
+  fill:transparent;
+  stroke:rgba(20,20,20,.11);
 }
 
 .zone-label {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  fill: rgba(20,20,20,0.48);
-  font-weight: 700;
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  fill:rgba(20,20,20,.48);
+  font-weight:700;
 }
 
 .threshold {
-  stroke: rgba(20,20,20,0.16);
-  stroke-dasharray: 5 7;
+  stroke:rgba(20,20,20,.16);
+  stroke-dasharray:5 7;
 }
 
-.trace-shadow {
-  fill: none;
-  stroke: rgba(20,20,20,0.11);
-  stroke-width: 9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.wave-shadow {
+  fill:none;
+  stroke:rgba(20,20,20,.10);
+  stroke-width:11;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
-.trace {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 3.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.wave {
+  fill:none;
+  stroke:var(--line);
+  stroke-width:3.25;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.altitude-guide {
+  fill:none;
+  stroke:rgba(20,20,20,.18);
+  stroke-width:1.5;
+  stroke-dasharray:3 7;
 }
 
 .marker-ring {
-  fill: rgba(244,241,234,0.94);
-  stroke: var(--line);
-  stroke-width: 2.5;
+  fill:rgba(244,241,234,.94);
+  stroke:var(--line);
+  stroke-width:2.5;
 }
 
-.marker-core { fill: var(--line); }
+.marker-core { fill:var(--line); }
 
 .metric-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
 }
 
 .metric {
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 13px;
-  background: rgba(255,255,255,0.32);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px;
+  background:rgba(255,255,255,.32);
 }
 
 .metric span {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  display:block;
+  margin-bottom:8px;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
 }
 
 .metric strong {
-  font-size: 22px;
-  letter-spacing: -0.05em;
+  font-size:22px;
+  letter-spacing:-.05em;
 }
 
 .control-card {
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 14px;
-  background: rgba(255,255,255,0.32);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:14px;
+  background:rgba(255,255,255,.32);
 }
 
 .control-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 label {
-  display: grid;
-  gap: 7px;
-  font-size: 11px;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 700;
+  display:grid;
+  gap:7px;
+  font-size:11px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:700;
 }
 
-input, select {
-  min-height: 44px;
-  border-radius: 15px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.45);
-  padding: 0 13px;
-  font: inherit;
-  font-size: 16px;
-  color: var(--ink);
+input,select {
+  min-height:44px;
+  border-radius:15px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.45);
+  padding:0 13px;
+  font:inherit;
+  font-size:16px;
+  color:var(--ink);
 }
 
 .note {
-  margin: 0;
-  padding: 0 4px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.45;
+  margin:0;
+  padding:0 4px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
 }
 
 .controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 .controls.three {
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns:1fr 1fr 1fr;
 }
 
 button {
-  min-height: 48px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: #171717;
-  color: #f5f1e8;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 750;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  min-height:48px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:#171717;
+  color:#f5f1e8;
+  font:inherit;
+  font-size:12px;
+  font-weight:750;
+  letter-spacing:.04em;
+  text-transform:uppercase;
 }
 
 button.secondary {
-  background: rgba(255,255,255,0.34);
-  color: var(--ink);
+  background:rgba(255,255,255,.34);
+  color:var(--ink);
 }
 
-button:disabled {
-  opacity: 0.45;
-}
-
-@media (max-height: 760px) {
-  .state-card { padding: 16px; }
-  .state-label { font-size: 36px; }
-  .chart-wrap svg { max-height: 390px; }
+@media (max-height:760px) {
+  .state-card { padding:16px; }
+  .state-label { font-size:36px; }
+  .chart-wrap svg { max-height:390px; }
 }
 </style>
 </head>
@@ -282,7 +284,7 @@ button:disabled {
 <header class="topbar">
   <div>
     <p class="eyebrow">HRV Altitude</p>
-    <h1>Nervous<br />System State</h1>
+    <h1>Nervous<br>System State</h1>
   </div>
   <div class="status-pill" id="modeLabel">Ready</div>
 </header>
@@ -295,7 +297,7 @@ button:disabled {
     </div>
 
     <div class="state-meta">
-      RMSSD<br />
+      RMSSD<br>
       <strong id="rmssdLabel">-- ms</strong>
     </div>
   </div>
@@ -316,11 +318,12 @@ button:disabled {
       <text x="22" y="288" class="zone-label">Loaded</text>
       <text x="22" y="413" class="zone-label">Strained</text>
 
-      <path id="traceShadow" class="trace-shadow" d="" />
-      <path id="tracePath" class="trace" d="" />
+      <path id="altitudeGuide" class="altitude-guide" d="" />
+      <path id="waveShadow" class="wave-shadow" d="" />
+      <path id="wavePath" class="wave" d="" />
 
-      <circle id="markerRing" cx="22" cy="250" r="13" class="marker-ring" />
-      <circle id="markerCore" cx="22" cy="250" r="4.5" class="marker-core" />
+      <circle id="markerRing" cx="350" cy="250" r="13" class="marker-ring" />
+      <circle id="markerCore" cx="350" cy="250" r="4.5" class="marker-core" />
     </svg>
   </div>
 </section>
@@ -360,7 +363,7 @@ button:disabled {
 </section>
 
 <p class="note" id="note">
-  Connect a Polar strap or run simulation mode. Higher altitude means RMSSD is above your baseline.
+  Two-axis view: altitude shows HRV state, wave rhythm shows live heartbeat frequency.
 </p>
 
 <div class="controls">
@@ -379,10 +382,9 @@ button:disabled {
 <script>
 const CONFIG = {
   chartWidth: 390,
-  maxPoints: 36,
+  chartHeight: 500,
   defaultBaseline: 52,
   rmssdWindowBeats: 36,
-  renderEveryBeats: 2,
   storageKey: "hrvAltitudeBaseline",
   states: {
     restored: { label: "Restored", minDelta: 10 },
@@ -401,8 +403,9 @@ const els = {
   deltaLabel: document.getElementById("deltaLabel"),
   baselineInput: document.getElementById("baselineInput"),
   simMode: document.getElementById("simMode"),
-  tracePath: document.getElementById("tracePath"),
-  traceShadow: document.getElementById("traceShadow"),
+  wavePath: document.getElementById("wavePath"),
+  waveShadow: document.getElementById("waveShadow"),
+  altitudeGuide: document.getElementById("altitudeGuide"),
   markerRing: document.getElementById("markerRing"),
   markerCore: document.getElementById("markerCore"),
   connectBtn: document.getElementById("connectBtn"),
@@ -415,13 +418,15 @@ const els = {
 
 const appState = {
   rrIntervals: [],
-  points: [],
   heartRate: null,
   baseline: CONFIG.defaultBaseline,
   rmssd: null,
   delta: null,
   state: "adaptive",
-  beatCount: 0,
+  targetY: 250,
+  displayY: 250,
+  wavePhase: 0,
+  lastFrame: performance.now(),
   device: null,
   server: null,
   hrCharacteristic: null,
@@ -434,7 +439,6 @@ const appState = {
 
 function loadSavedBaseline() {
   const saved = Number(localStorage.getItem(CONFIG.storageKey));
-
   if (Number.isFinite(saved) && saved > 0) {
     appState.baseline = saved;
     els.baselineInput.value = saved;
@@ -443,16 +447,14 @@ function loadSavedBaseline() {
 
 function saveBaseline() {
   const baseline = Number(els.baselineInput.value);
-
   if (!Number.isFinite(baseline) || baseline <= 0) {
     els.note.textContent = "Enter a valid baseline before saving.";
     return;
   }
-
   localStorage.setItem(CONFIG.storageKey, String(baseline));
   appState.baseline = baseline;
   els.note.textContent = `Baseline saved: ${Math.round(baseline)} ms.`;
-  render();
+  renderNumbers();
 }
 
 function calculateRMSSD(rrIntervals) {
@@ -470,10 +472,8 @@ function calculateRMSSD(rrIntervals) {
 
 function estimateHeartRate(rrIntervals) {
   if (!rrIntervals.length) return null;
-
   const recent = rrIntervals.slice(-5);
   const avgRR = recent.reduce((sum, rr) => sum + rr, 0) / recent.length;
-
   return Math.round(60000 / avgRR);
 }
 
@@ -495,9 +495,8 @@ function addRRInterval(rr) {
   if (rr < 300 || rr > 2000) return;
 
   appState.rrIntervals.push(rr);
-  appState.beatCount++;
 
-  if (appState.rrIntervals.length > 120) {
+  if (appState.rrIntervals.length > 160) {
     appState.rrIntervals.shift();
   }
 
@@ -510,48 +509,18 @@ function updateEngine() {
   const windowedRR = appState.rrIntervals.slice(-CONFIG.rmssdWindowBeats);
 
   appState.rmssd = calculateRMSSD(windowedRR);
-
-  if (!appState.heartRate) {
-    appState.heartRate = estimateHeartRate(appState.rrIntervals);
-  }
+  appState.heartRate = appState.heartRate || estimateHeartRate(appState.rrIntervals);
 
   if (appState.rmssd !== null && appState.baseline > 0) {
     appState.delta = ((appState.rmssd - appState.baseline) / appState.baseline) * 100;
     appState.state = getStateFromDelta(appState.delta);
-
-    if (appState.beatCount % CONFIG.renderEveryBeats === 0) {
-      appState.points.push(getYFromDelta(appState.delta));
-
-      if (appState.points.length > CONFIG.maxPoints) {
-        appState.points.shift();
-      }
-    }
+    appState.targetY = getYFromDelta(appState.delta);
   }
 
-  render();
+  renderNumbers();
 }
 
-function makePath(points) {
-  if (!points.length) return "";
-
-  const coords = points.map((y, index) => ({
-    x: 22 + index * ((CONFIG.chartWidth - 44) / Math.max(CONFIG.maxPoints - 1, 1)),
-    y
-  }));
-
-  let d = `M ${coords[0].x} ${coords[0].y}`;
-
-  for (let i = 1; i < coords.length; i++) {
-    const prev = coords[i - 1];
-    const curr = coords[i];
-    const midX = (prev.x + curr.x) / 2;
-    d += ` C ${midX} ${prev.y}, ${midX} ${curr.y}, ${curr.x} ${curr.y}`;
-  }
-
-  return d;
-}
-
-function render() {
+function renderNumbers() {
   const stateConfig = CONFIG.states[appState.state];
 
   els.stateLabel.textContent = stateConfig.label;
@@ -566,23 +535,90 @@ function render() {
     appState.delta === null
       ? "--"
       : `${appState.delta > 0 ? "+" : ""}${Math.round(appState.delta)}%`;
+}
 
-  const path = makePath(appState.points);
-  els.tracePath.setAttribute("d", path);
-  els.traceShadow.setAttribute("d", path);
+function getWaveSettings() {
+  const hr = appState.heartRate || estimateHeartRate(appState.rrIntervals) || 62;
+  const rmssd = appState.rmssd || appState.baseline || 52;
+  const delta = appState.delta ?? 0;
 
-  if (appState.points.length) {
-    const lastY = appState.points[appState.points.length - 1];
-    const lastX =
-      22 +
-      (appState.points.length - 1) *
-      ((CONFIG.chartWidth - 44) / Math.max(CONFIG.maxPoints - 1, 1));
+  const frequency = 0.055 + Math.min(Math.max(hr, 45), 150) / 900;
+  const amplitude = Math.max(4, Math.min(34, 8 + rmssd * 0.28));
+  const irregularity = Math.max(0.4, Math.min(2.2, Math.abs(delta) / 18 + 0.6));
 
-    els.markerRing.setAttribute("cx", lastX);
-    els.markerRing.setAttribute("cy", lastY);
-    els.markerCore.setAttribute("cx", lastX);
-    els.markerCore.setAttribute("cy", lastY);
+  return { hr, frequency, amplitude, irregularity };
+}
+
+function makeContinuousWavePath() {
+  const { frequency, amplitude, irregularity } = getWaveSettings();
+
+  const points = [];
+  const step = 7;
+  const width = CONFIG.chartWidth;
+  const left = 18;
+  const right = width - 18;
+
+  for (let x = left; x <= right; x += step) {
+    const local = x * frequency + appState.wavePhase;
+
+    const primary = Math.sin(local) * amplitude;
+    const secondary = Math.sin(local * 0.47 + 1.7) * amplitude * 0.24;
+    const micro = Math.sin(local * 1.9) * irregularity * 1.4;
+
+    const fadeEdge = Math.sin(((x - left) / (right - left)) * Math.PI);
+    const y = appState.displayY + (primary + secondary + micro) * fadeEdge;
+
+    points.push({ x, y });
   }
+
+  if (!points.length) return "";
+
+  let d = `M ${points[0].x} ${points[0].y}`;
+
+  for (let i = 1; i < points.length; i++) {
+    const prev = points[i - 1];
+    const curr = points[i];
+    const midX = (prev.x + curr.x) / 2;
+    d += ` C ${midX} ${prev.y}, ${midX} ${curr.y}, ${curr.x} ${curr.y}`;
+  }
+
+  return d;
+}
+
+function makeAltitudeGuide() {
+  const y = appState.displayY;
+  return `M 18 ${y} L 372 ${y}`;
+}
+
+function renderWave() {
+  const path = makeContinuousWavePath();
+  els.wavePath.setAttribute("d", path);
+  els.waveShadow.setAttribute("d", path);
+  els.altitudeGuide.setAttribute("d", makeAltitudeGuide());
+
+  const markerX = 350;
+  const { frequency, amplitude } = getWaveSettings();
+  const local = markerX * frequency + appState.wavePhase;
+  const markerY = appState.displayY + Math.sin(local) * amplitude * 0.65;
+
+  els.markerRing.setAttribute("cx", markerX);
+  els.markerRing.setAttribute("cy", markerY);
+  els.markerCore.setAttribute("cx", markerX);
+  els.markerCore.setAttribute("cy", markerY);
+}
+
+function animationLoop(now) {
+  const dt = Math.min(48, now - appState.lastFrame);
+  appState.lastFrame = now;
+
+  const { hr } = getWaveSettings();
+
+  appState.displayY += (appState.targetY - appState.displayY) * 0.035;
+  appState.wavePhase += dt * (0.0025 + hr / 60000);
+
+  renderWave();
+
+  requestAnimationFrame(animationLoop);
 }
 
 function parseHeartRateMeasurement(value) {
@@ -624,9 +660,9 @@ function handleHeartRateNotification(event) {
   if (parsed.rrIntervals.length) {
     parsed.rrIntervals.forEach(addRRInterval);
     els.modeLabel.textContent = "Polar Live";
-    els.note.textContent = `Live Polar data. Last packet: ${parsed.rrIntervals.length} RR interval(s).`;
+    els.note.textContent = `Live Polar data. ${parsed.rrIntervals.length} RR interval(s) received.`;
   } else {
-    render();
+    renderNumbers();
     els.note.textContent = "Heart rate received. Waiting for RR intervals.";
   }
 }
@@ -646,7 +682,7 @@ async function connectPolar() {
 
   if (!navigator.bluetooth) {
     els.modeLabel.textContent = "No Bluetooth";
-    els.note.textContent = "Web Bluetooth unavailable. Use Chrome/Edge on desktop or Android. iPhone browser support is likely the blocker.";
+    els.note.textContent = "Web Bluetooth unavailable here. Use Chrome/Edge on desktop or Android. iPhone browser support is likely the blocker.";
     return;
   }
 
@@ -673,7 +709,6 @@ async function connectPolar() {
     appState.hrCharacteristic = characteristic;
 
     characteristic.addEventListener("characteristicvaluechanged", handleHeartRateNotification);
-
     await characteristic.startNotifications();
 
     els.modeLabel.textContent = "Polar Live";
@@ -701,9 +736,7 @@ async function disconnectPolar() {
     }
 
     handleDisconnect();
-
-  } catch (error) {
-    els.note.textContent = "Disconnect attempted, but the device may already be disconnected.";
+  } catch {
     handleDisconnect();
   }
 }
@@ -746,7 +779,7 @@ function generateSimulatedRR() {
   return Math.round(
     baseRR +
     breathWave * variability +
-    slowWave * variability * 0.22 +
+    slowWave * variability * .22 +
     randomBetween(-noise, noise)
   );
 }
@@ -757,7 +790,7 @@ function startSimulation() {
   appState.simulation.active = true;
   els.simulateBtn.textContent = "Stop Sim";
   els.modeLabel.textContent = "Simulating";
-  els.note.textContent = "Simulation running.";
+  els.note.textContent = "Simulation running. Wave frequency, altitude, and amplitude are now separated.";
 
   appState.simulation.timer = setInterval(() => {
     appState.heartRate = null;
@@ -783,18 +816,18 @@ function resetData() {
   stopSimulation();
 
   appState.rrIntervals = [];
-  appState.points = [];
   appState.heartRate = null;
   appState.rmssd = null;
   appState.delta = null;
   appState.state = "adaptive";
-  appState.beatCount = 0;
+  appState.targetY = 250;
+  appState.displayY = 250;
   appState.simulation.tick = 0;
 
   els.modeLabel.textContent = "Ready";
   els.note.textContent = "Reset complete. Connect Polar or start simulation.";
 
-  render();
+  renderNumbers();
 }
 
 els.connectBtn.addEventListener("click", connectPolar);
@@ -805,7 +838,8 @@ els.saveBaselineBtn.addEventListener("click", saveBaseline);
 els.baselineInput.addEventListener("input", updateEngine);
 
 loadSavedBaseline();
-render();
+renderNumbers();
+requestAnimationFrame(animationLoop);
 </script>
 </body>
 </html>
